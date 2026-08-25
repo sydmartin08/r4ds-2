@@ -13,6 +13,52 @@ library(tidyverse)
 library(readxl)
 ```
 
+## NBA recruits data structure
+
+```{r}
+nba_recruits <- read_excel("data/nba_recruits.xlsx")
+
+tibble(
+  column = names(nba_recruits),
+  type = vapply(nba_recruits, class, character(1)),
+  example_values = vapply(
+    nba_recruits,
+    \(values) paste(head(values, 3), collapse = ", "),
+    character(1)
+  )
+)
+```
+
+## NBA recruits summary statistics
+
+```{r}
+nba_recruits |>
+  select(rank, nba_mean_ws48, top_mean_wa, total_seasons, drafted) |>
+  summary()
+```
+
+```{r}
+basketball_tibble <- read_excel("data/nba_recruits.xlsx") |>
+  mutate(tier = factor(
+    tier,
+    levels = c(
+      "Never played",
+      "Brief career",
+      "Solid career",
+      "All-Star level",
+      "Superstar"
+    ),
+    ordered = TRUE
+  ))
+```
+
+## NBA recruits by career tier
+
+```{r}
+basketball_tibble |>
+  count(tier, name = "players")
+```
+
 
 ```{r}
 glimpse(read_excel("data/us_births_1994_2014.xlsx"))
@@ -140,3 +186,136 @@ ggplot(calendar_resid, aes(x = calendar_date, y = mean_pct_resid)) +
   )
 ```
 
+```{r}
+basketball_tibble <- read_excel("data/nba_recruits.xlsx") |>
+  mutate(
+    tier = factor(
+      tier,
+      levels = c("Never played", "Brief career", "Solid career",
+                 "All-Star level", "Superstar")
+    ),
+    recruit_group = factor(
+      recruit_group,
+      levels = c("#1–10", "#11–25", "#26–50", "#51–100", "Outside top 100")
+    )
+  )
+
+count(basketball_tibble, recruit_group)
+```
+
+```{r}
+#| cache: true
+basketball_tibble <- read_excel("data/nba_recruits.xlsx") |>
+  mutate(
+    tier = factor(
+      tier,
+      levels = c("Never played", "Brief career", "Solid career",
+                 "All-Star level", "Superstar")
+    ),
+    recruit_group = factor(
+      recruit_group,
+      levels = c("#1–10", "#11–25", "#26–50", "#51–100", "Outside top 100")
+    )
+  )
+```
+
+```{r}
+basketball_tibble |>
+  ggplot(aes(x = fct_rev(recruit_group), fill = tier)) +
+  geom_bar(position = "fill") +
+  coord_flip() +
+  scale_fill_brewer(palette = "RdYlGn", direction = 1) +
+  labs(
+    title = "Career Outcomes by High School Recruit Rank",
+    subtitle = "Higher-ranked recruits are more likely to reach the NBA",
+    x = "Recruit group",
+    y = "Proportion",
+    fill = "Career tier",
+    caption = "Source: The Pudding, 2019"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+basketball_tibble |>
+  filter(recruit_group != "Outside top 100") |>
+  ggplot(aes(x = fct_rev(recruit_group), fill = tier)) +
+  geom_bar(position = "fill") +
+  coord_flip() +
+  scale_fill_brewer(palette = "RdYlGn", direction = 1) +
+  labs(
+    title = "Career Outcomes by High School Recruit Rank",
+    subtitle = "Top-100 recruits only — all groups include players who never reached the NBA",
+    x = "Recruit group",
+    y = "Proportion",
+    fill = "Career tier",
+    caption = "Source: The Pudding, 2019"
+  ) +
+  theme_minimal()
+
+```
+
+
+
+```{r}
+basketball_tibble |>
+  filter(!is.na(nba_mean_ws48)) |>
+  ggplot(aes(x = fct_rev(recruit_group), y = nba_mean_ws48,
+             fill = fct_rev(recruit_group))) +
+  geom_boxplot(show.legend = FALSE) +
+  coord_flip() +
+  labs(
+    title = "NBA Career Quality by High School Recruit Rank",
+    subtitle = paste0("n = ", sum(!is.na(basketball_tibble$nba_mean_ws48)),
+                      " players with career stats"),
+    x = "Recruit group",
+    y = "Career Win Shares per 48 min (WS48)",
+    caption = "Source: The Pudding, 2019"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+basketball_tibble |>
+  filter(!is.na(nba_mean_ws48)) |>
+  arrange(desc(nba_mean_ws48)) |>
+  select(name, rank, recruit_group, nba_mean_ws48) |>
+  head(10)
+```
+
+```{r}
+basketball_tibble |>
+  filter(!is.na(rank), !is.na(top_mean_wa)) |>
+  ggplot(aes(x = rank, y = top_mean_wa, color = tier)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "black", linewidth = 0.5) +
+  geom_text(
+    data = \(d) d |> filter(name %in% c("LeBron James", "Kevin Durant",
+                                         "Klay Thompson")),
+    aes(label = name),
+    nudge_y = 1.2, hjust = 0,
+    size = 3, show.legend = FALSE
+  ) +
+  geom_text(
+    data = \(d) d |> filter(name %in% c("Draymond Green", "Gilbert Arenas")),
+    aes(label = name),
+    nudge_y = 1.2, hjust = 1,
+    size = 3, show.legend = FALSE
+  ) +
+  scale_color_manual(values = c(
+    "Never played"   = "gray80",
+    "Brief career"   = "#74add1",
+    "Solid career"   = "#fee090",
+    "All-Star level" = "#f46d43",
+    "Superstar"      = "#d73027"
+  )) +
+  labs(
+    title = "Does High School Recruit Rank Predict NBA Stardom?",
+    subtitle = "Among players who reached the NBA — rank predicts average careers but not superstars",
+    x = "High school recruit rank (1 = top recruit)",
+    y = "Peak Wins Added (best 5-season average)",
+    color = "Career level",
+    caption = "Source: The Pudding, 2019"
+  ) +
+  theme_minimal()
+```
