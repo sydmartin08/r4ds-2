@@ -76,7 +76,128 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 7,670
+Columns: 5
+$ year          &lt;dbl&gt; 1994, 1994, 1994, 1994, 1994, 1994, 1994, 1994, 1994, 19…
+$ month         &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ date_of_month &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1…
+$ day_of_week   &lt;chr&gt; "Sat", "Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat…
+$ births        &lt;dbl&gt; 8096, 7772, 10142, 11248, 11053, 11406, 11251, 8653, 791…</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     births           year     
+ Min.   : 5728   Min.   :1994  
+ 1st Qu.: 8786   1st Qu.:1999  
+ Median :11981   Median :2004  
+ Mean   :11175   Mean   :2004  
+ 3rd Qu.:12816   3rd Qu.:2009  
+ Max.   :16081   Max.   :2014  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.828832</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21 × 5
+    year christmas_births christmas_weekday surrounding_average pct_of_baseline
+   &lt;dbl&gt;            &lt;dbl&gt; &lt;ord&gt;                           &lt;dbl&gt;           &lt;dbl&gt;
+ 1  1994             7192 Sun                            11392.            63.1
+ 2  1995             7027 Mon                            10664.            65.9
+ 3  1996             7092 Wed                            10019.            70.8
+ 4  1997             7055 Thurs                          10239.            68.9
+ 5  1998             7020 Fri                            11094.            63.3
+ 6  1999             6674 Sat                            11790.            56.6
+ 7  2000             6719 Mon                            11684.            57.5
+ 8  2001             6603 Tues                           10791.            61.2
+ 9  2002             6774 Wed                            10578.            64.0
+10  2003             6744 Thurs                          10716.            62.9
+# ℹ 11 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>      year      christmas_births christmas_weekday surrounding_average
+ Min.   :1994   Min.   :5728     Sun  :3           Min.   :10019      
+ 1st Qu.:1999   1st Qu.:6325     Mon  :3           1st Qu.:10578      
+ Median :2004   Median :6624     Tues :3           Median :11094      
+ Mean   :2004   Mean   :6601     Wed  :3           Mean   :11252      
+ 3rd Qu.:2009   3rd Qu.:6774     Thurs:4           3rd Qu.:11790      
+ Max.   :2014   Max.   :7192     Fri  :2           Max.   :12690      
+                                 Sat  :3                              
+ pct_of_baseline
+ Min.   :48.11  
+ 1st Qu.:53.12  
+ Median :60.73  
+ Mean   :59.10  
+ 3rd Qu.:63.28  
+ Max.   :70.79  
+                </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [7,670 × 6] (S3: tbl_df/tbl/data.frame)
+ $ year         : num [1:7670] 1994 1994 1994 1994 1994 ...
+ $ month        : num [1:7670] 1 1 1 1 1 1 1 1 1 1 ...
+ $ date_of_month: num [1:7670] 1 2 3 4 5 6 7 8 9 10 ...
+ $ day_of_week  : Ord.factor w/ 7 levels "Sun"&lt;"Mon"&lt;"Tues"&lt;..: 7 1 2 3 4 5 6 7 1 2 ...
+ $ births       : num [1:7670] 8096 7772 10142 11248 11053 ...
+ $ pct_resid    : Named num [1:7670] -0.638 5.292 -9.038 -10.192 -9.959 ...
+  ..- attr(*, "names")= chr [1:7670] "1" "2" "3" "4" ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 365 × 4
+   month date_of_month mean_pct_resid calendar_date
+   &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt; &lt;date&gt;       
+ 1     1             1        -26.5   2001-01-01   
+ 2     1             2        -13.9   2001-01-02   
+ 3     1             3         -2.52  2001-01-03   
+ 4     1             4          0.394 2001-01-04   
+ 5     1             5          0.363 2001-01-05   
+ 6     1             6         -0.149 2001-01-06   
+ 7     1             7          0.103 2001-01-07   
+ 8     1             8         -1.15  2001-01-08   
+ 9     1             9         -2.17  2001-01-09   
+10     1            10         -0.701 2001-01-10   
+# ℹ 355 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 </main>
 <!-- /main column -->
